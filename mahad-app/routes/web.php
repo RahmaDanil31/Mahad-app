@@ -126,6 +126,15 @@ Route::middleware(['Admin', 'auth'])->group(function () {
     Route::post('/admin/form-pendaftaran', 'App\Http\Controllers\PendaftaranController@store')->name('daftar.store');
 
     Route::delete('/admin/pendaftaran/{id}', 'App\Http\Controllers\PendaftaranController@destroy')->name('daftar.destroy');
+
+    Route::get('/admin/form-pendaftaran/{id}', function ($id) {
+        $kamars = Kamar::all();
+        $jurusans = Jurusan::all();
+        $user = User::findOrFail($id);
+        return view('admin.form-pendaftaran-edit', compact('kamars', 'jurusans', 'user'));
+    });
+
+    Route::put('/admin/pendaftaran/{id}', 'App\Http\Controllers\PendaftaranController@update')->name('pendaftaran.update');
 });
 
 Route::middleware(['User'])->group(function () {

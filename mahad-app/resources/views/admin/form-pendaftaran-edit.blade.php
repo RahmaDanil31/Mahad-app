@@ -85,8 +85,9 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('daftar.store') }}" enctype="multipart/form-data" method="POST">
+                            <form action="{{ route('pendaftaran.update', $user->id) }}" enctype="multipart/form-data" method="post">
                                 @csrf
+                                @method('PUT')
                                 <div class="card-body">
                                     <div class="row">
                                         <div class="col-md-12">
@@ -98,27 +99,31 @@
                                         <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="name">Nama Lengkap <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="name" name="name" required placeholder="Masukan Nama Lengkap">
+                                                <input type="text" class="form-control" id="name" value="{{$user->name}}" name="name" required placeholder="Masukan Nama Lengkap">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label for="nim">Nim <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="nim" name="nim" required placeholder="Masukan Nim">
+                                                <input type="text" class="form-control" id="nim" name="nim" value="{{$user->nim}}" required placeholder="Masukan Nim">
                                             </div>
                                         </div>
                                         <div class="col-md-8">
                                             <div class="form-group">
                                                 <label for="email">Email <span style="color: red;">*</span></label>
-                                                <input class="form-control" id="email" name="email" type="email" required placeholder="Masukan Email">
+                                                <input class="form-control" id="email" name="email" type="email" value="{{$user->email}}" required placeholder="Masukan Email">
                                             </div>
                                         </div>
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <label>Jenis Kelamin</label>
                                                 <select name="jenis_kelamin" class="form-control select2" style="width: 100%;">
+                                                    @if ($user->jenis_kelamin == 'L')
                                                     <option selected="selected" value="L">Laki-laki</option>
-                                                    <option value="P">Perempuan</option>
+                                                    @else
+                                                    <option selected="selected" value="P">Perempuan</option>
+                                                    @endif
+                                                    <option value="{{ $user->jenis_kelamin == 'L' ? 'P':'L'}}">{{ $user->jenis_kelamin=='L' ? 'Perempuan' : 'Laki-laki' }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -126,41 +131,41 @@
                                         <div class="col-md-9">
                                             <div class="form-group">
                                                 <label for="tempat_lahir">Tempat Lahir <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="tempat_lahir" required name="tempat_lahir">
+                                                <input type="text" class="form-control" id="tempat_lahir" value="{{$user->tempat_lahir}}" required name="tempat_lahir">
                                             </div>
                                         </div>
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="tanggal_lahir">Tanggal Lahir <span style="color: red;">*</span></label>
-                                                <input type="date" class="form-control" id="tanggal_lahir" required name="tanggal_lahir">
+                                                <input type="date" class="form-control" id="tanggal_lahir" value="{{ date('Y-m-d', strtotime($user->tanggal_lahir)) }}" required name="tanggal_lahir">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="slta">SLTA <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" required id="slta" name="slta">
+                                                <input type="text" class="form-control" value="{{$user->slta}}" required id="slta" name="slta">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="telepon">Telepon <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="telepon" required name="telepon">
+                                                <input type="text" class="form-control" value="{{$user->telepon}}" id="telepon" required name="telepon">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="wa">WA <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" required id="wa" name="wa">
+                                                <input type="text" class="form-control" value="{{$user->wa}}" required id="wa" name="wa">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="pendidikan_pesantren">Pendidikan Pesantren <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="pendidikan_pesantren" required name="pendidikan_pesantren">
+                                                <input type="text" class="form-control" id="pendidikan_pesantren" value="{{$user->pendidikan_pesantren}}" required name="pendidikan_pesantren">
                                             </div>
                                         </div>
 
@@ -169,7 +174,11 @@
                                                 <label>Gedung/No Kamar</label>
                                                 <select class="form-control select2" name="kamar_id" style="width: 100%;">
                                                     @foreach ($kamars as $index => $kamar)
-                                                    <option value="{{ $kamar->id }}"> {{ $kamar->gedung->nama }}, Kamar : {{ $kamar->nama }}</option>
+                                                    @if ($user->kamar_id == $kamar->id)
+                                                    <option selected="selected" value="{{ $kamar->id }}"> {{ $kamar->gedung->nama }}, Kamar : {{ $kamar->nama }}</option>
+                                                    @else
+                                                    <option value="{{ $kamar->id }}">{{ $kamar->gedung->nama }}, Kamar : {{ $kamar->nama }}</option>
+                                                    @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -179,9 +188,14 @@
                                             <div class="form-group">
                                                 <label>Foto (3 x 4) <span style="color: red;">*</span></label>
                                                 <div class="custom-file">
-                                                    <input type="file" class="custom-file-input" required name="foto" id="foto">
+                                                    <input type="file" class="custom-file-input" {{$user->path_foto == null ?'required':'' }} name="foto" id="foto">
                                                     <label class="custom-file-label" for="foto">Upload</label>
                                                 </div>
+                                                @php
+                                                $foto = substr($user->path_foto, strpos($user->path_foto, 'foto/') + 5); // Menghapus 'surat/' dari path file
+                                                @endphp
+                                                <a href="{{ asset('/'.$user->path_foto) }}" download>{{ $foto }}</a>
+
                                             </div>
                                         </div>
 
@@ -194,42 +208,42 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="nama_ayah">Nama Ayah <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="nama_ayah" required name="nama_ayah">
+                                                <input type="text" class="form-control" value="{{$user->nama_ayah}}" id="nama_ayah" required name="nama_ayah">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="nama_ibu">Nama Ibu <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="nama_ibu" required name="nama_ibu">
+                                                <input type="text" class="form-control" value="{{$user->nama_ibu}}" id="nama_ibu" required name="nama_ibu">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="pekerjaan">Pekerjaan <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="pekerjaan" required name="pekerjaan_ortu">
+                                                <input type="text" class="form-control" id="pekerjaan" value="{{$user->pekerjaan_ortu}}" required name="pekerjaan_ortu">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="telepon_ortu">Telepon <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="telepon_ortu" required name="telepon_ortu">
+                                                <input type="text" class="form-control" id="telepon_ortu" value="{{$user->telepon_ortu}}" required name="telepon_ortu">
                                             </div>
                                         </div>
 
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="wa_ortu">WA <span style="color: red;">*</span></label>
-                                                <input type="text" class="form-control" id="wa_ortu" required name="wa_ortu">
+                                                <input type="text" class="form-control" id="wa_ortu" value="{{$user->wa_ortu}}" required name="wa_ortu">
                                             </div>
                                         </div>
 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="alamat_ortu">Alamat <span style="color: red;">*</span></label>
-                                                <textarea class="form-control" name="alamat_ortu" required id="alamat_ortu"></textarea>
+                                                <textarea class="form-control" name="alamat_ortu" required id="alamat_ortu"> {{$user->alamat_ortu}}</textarea>
                                             </div>
                                         </div>
 
@@ -244,7 +258,11 @@
                                                 <label>Jurusan (Program Studi)</label>
                                                 <select class="form-control select2" id="jurusan" name="jurusan_id" onchange="setFakultas(event);" style="width: 100%;">
                                                     @foreach ($jurusans as $index => $jurusan)
+                                                    @if ($user->jurusan_id == $jurusan->id)
                                                     <option value="{{ $jurusan->id }}" fakultas="{{ $jurusan->fakultas->nama }}"> {{ $jurusan->nama }}</option>
+                                                    @else
+                                                    <option value="{{ $jurusan->id }}" fakultas="{{ $jurusan->fakultas->nama }}"> {{ $jurusan->nama }}</option>
+                                                    @endif
                                                     @endforeach
                                                 </select>
                                             </div>
@@ -254,7 +272,7 @@
                                             <div class="form-group">
                                                 <label>Fakultas</label>
                                                 <select class="form-control select2" disabled id="fakultas_id" style="width: 100%;">
-                                                    <option> {{ $jurusan1->fakultas->nama }}</option>
+                                                    <option> {{ $user->jurusan->fakultas->nama }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -269,11 +287,11 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="1" id="customRadio1" name="jalur_masuk" checked>
+                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="1" id="customRadio1" name="jalur_masuk" {{$user->jalur_masuk =='1'?'checked':'' }}>
                                                     <label for="customRadio1" class="custom-control-label">SPAN-PTKIN</label>
                                                 </div>
                                                 <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="2" id="customRadio2" name="jalur_masuk">
+                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="2" id="customRadio2" name="jalur_masuk" {{$user->jalur_masuk =='2'?'checked':'' }}>
                                                     <label for="customRadio2" class="custom-control-label">SPMB-PTAIN</label>
                                                 </div>
                                             </div>
@@ -281,15 +299,15 @@
                                         <div class="col-md-4">
                                             <div class="form-group">
                                                 <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="3" id="customRadio3" value="1" name="jalur_masuk">
+                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="3" id="customRadio3" name="jalur_masuk" {{$user->jalur_masuk =='3'?'checked':'' }}>
                                                     <label for="customRadio3" class="custom-control-label">SPMB-MANDIRI</label>
                                                 </div>
                                                 <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="4" id="customRadio4" name="jalur_masuk">
+                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="4" id="customRadio4" name="jalur_masuk" {{$user->jalur_masuk =='4'?'checked':'' }}>
                                                     <label for="customRadio4" class="custom-control-label">BEASISWA</label>
                                                 </div>
                                                 <div class="custom-control custom-radio">
-                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="5" id="customRadio5" name="jalur_masuk">
+                                                    <input class="custom-control-input custom-control-input-danger" type="radio" value="5" id="customRadio5" name="jalur_masuk" {{$user->jalur_masuk =='5'?'checked':'' }}>
                                                     <label for="customRadio5" class="custom-control-label">LAINNYA</label>
                                                 </div>
                                             </div>
@@ -307,6 +325,11 @@
                                                     <input type="file" class="custom-file-input" name="surat" id="surat">
                                                     <label class="custom-file-label" for="surat">Upload Surat Keterangan Dokter</label>
                                                 </div>
+                                                @php
+                                                $namaSurat = substr($user->path_file, strpos($user->path_file, 'surat/') + 6); // Menghapus 'surat/' dari path file
+                                                @endphp
+                                                <a href="{{ asset('/'.$user->path_file) }}" download>{{ $namaSurat }}</a>
+
                                             </div>
                                         </div>
                                     </div>

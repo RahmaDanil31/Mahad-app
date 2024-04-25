@@ -133,11 +133,11 @@
                                                 <td style="width: 22%;">
                                                     <div class="row">
                                                         <div class="col-4">
-                                                            <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#modal-petugas-edit{{ $user->id }}">
+                                                            <a type="button" class="btn btn-info btn-sm" href="{{ url('/admin/form-pendaftaran/' . $user->id) }}">
                                                                 <i class="fas fa-pencil-alt">
                                                                 </i>
                                                                 Edit
-                                                            </button>
+                                                            </a>
                                                         </div>
                                                         <div class="col-4">
                                                             <form action="{{ route('daftar.destroy', $user->id) }}" method="POST">

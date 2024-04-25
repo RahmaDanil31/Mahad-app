@@ -74,4 +74,9 @@ class User extends Authenticatable
     {
         return $this->role->name === $role;
     }
+
+    public function jurusan()
+    {
+        return $this->belongsTo(Jurusan::class);
+    }
 }
